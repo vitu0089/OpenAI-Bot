@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -29,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const openai_1 = require("openai");
 const discord_js_1 = __importStar(require("discord.js"));
 const Settings_1 = __importDefault(require("./Settings"));
-const Config = new openai_1.Configuration({
+const RateLimit_1 = __importDefault(require("./RateLimit"));
+const AIConfig = new openai_1.Configuration({
     organization: Settings_1.default.OrganizationID,
     apiKey: Settings_1.default.APIKey
 });
@@ -44,16 +54,45 @@ const Client = new discord_js_1.default.Client({
         discord_js_1.Partials.Channel
     ]
 });
+const AI = new openai_1.OpenAIApi(AIConfig);
+const RateLimit = new RateLimit_1.default(Settings_1.default.RateLimit, Settings_1.default.RateLimitPeriod);
+function MakeRequest(Text) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((res) => {
+            const ID = RateLimit.HasOpenSlot();
+            if (!ID) {
+                return;
+            }
+            AI.createChatCompletion({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                        role: "user",
+                        content: Text
+                    }]
+            })
+                .then((Res) => {
+                var _a;
+                console.log("Request made with stats -", Res.status);
+                res((_a = Res.data.choices[0].message) === null || _a === void 0 ? void 0 : _a.content);
+            })
+                .catch((err) => {
+                console.log(err);
+                res(false);
+            });
+        });
+    });
+}
 Client.on("ready", () => {
     var StartTime = new Date().getTime();
     console.log(`Done - ${new Date().getTime() - StartTime}ms`);
 });
-Client.on("messageCreate", (message) => {
-    if (message.author.bot || !Client.user || !message.mentions.has(Client.user.id))
+Client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {
+    if (message.author.bot || !Client.user)
         return;
     // Remove tag
     var RawText = message.content;
     var FilteredText = RawText.replace(`<@${Client.user.id}>`, "");
-    console.log("Filtered", FilteredText);
-});
+    var Response = yield MakeRequest(FilteredText);
+    message.reply(Response || "Failed to make request");
+}));
 Client.login(Settings_1.default.DiscordKey);

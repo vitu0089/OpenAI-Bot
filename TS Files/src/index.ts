@@ -36,7 +36,6 @@ async function MakeRequest(Text:string):Promise<any> {
             }]
         })
         .then((Res) => {
-            console.log("Request made with stats -",Res.status)
             res(Res.data.choices[0].message?.content)
         })
         .catch((err) => {

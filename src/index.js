@@ -72,7 +72,6 @@ function MakeRequest(Text) {
             })
                 .then((Res) => {
                 var _a;
-                console.log("Request made with stats -", Res.status);
                 res((_a = Res.data.choices[0].message) === null || _a === void 0 ? void 0 : _a.content);
             })
                 .catch((err) => {

@@ -1,7 +1,7 @@
 import { APIKey, DiscordKey } from "./Keys"
 export default {
 
-    OrganizationID              :   "org-e9RGUDRx17jgqbsNnBHh4Du0",
+    OrganizationID              :   "",
     APIKey                      :   APIKey,
     DiscordKey                  :   DiscordKey,
 

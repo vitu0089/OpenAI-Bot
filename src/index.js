@@ -87,7 +87,7 @@ Client.on("ready", () => {
     console.log(`Done - ${new Date().getTime() - StartTime}ms`);
 });
 Client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {
-    if (message.author.bot || !Client.user)
+    if (message.author.bot || !Client.user || !message.mentions.has(Client.user.id))
         return;
     // Remove tag
     var RawText = message.content;

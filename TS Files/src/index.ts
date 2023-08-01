@@ -53,7 +53,7 @@ Client.on("ready",() => {
 })
 
 Client.on("messageCreate",async (message) => {
-    if (message.author.bot || !Client.user) return;
+    if (message.author.bot || !Client.user || !message.mentions.has(Client.user.id)) return;
 
     // Remove tag
     var RawText = message.content

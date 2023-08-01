@@ -72,7 +72,7 @@ function MakeRequest(Text) {
             })
                 .then((Res) => {
                 var _a;
-                res((_a = Res.data.choices[0].message) === null || _a === void 0 ? void 0 : _a.content);
+                res(Res.status != 429 && ((_a = Res.data.choices[0].message) === null || _a === void 0 ? void 0 : _a.content) || false);
             })
                 .catch((err) => {
                 console.log(err);
@@ -90,10 +90,13 @@ Client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, functi
         return;
     // Remove tag
     var RawText = message.content;
-    var FilteredText = RawText.replace(`<@${Client.user.id}>`, "") + " in english";
+    var FilteredText = RawText.replace(`<@${Client.user.id}>`, "");
     var Response = yield message.reply("Thinking...");
     MakeRequest(FilteredText).then((Text) => {
         Response.edit(Text || "Rate Limit 3/3@60s");
+    }).catch((err) => {
+        console.log(err);
+        Response.edit("Failed...");
     });
 }));
 Client.login(Settings_1.default.DiscordKey);

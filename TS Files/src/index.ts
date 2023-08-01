@@ -36,7 +36,7 @@ async function MakeRequest(Text:string):Promise<any> {
             }]
         })
         .then((Res) => {
-            res(Res.data.choices[0].message?.content)
+            res(Res.status != 429 && Res.data.choices[0].message?.content || false)
         })
         .catch((err) => {
             console.log(err)
@@ -56,11 +56,14 @@ Client.on("messageCreate",async (message) => {
 
     // Remove tag
     var RawText = message.content
-    var FilteredText = RawText.replace(`<@${Client.user.id}>`,"") + " in english"
+    var FilteredText = RawText.replace(`<@${Client.user.id}>`,"")
 
     var Response = await message.reply("Thinking...") 
     MakeRequest(FilteredText).then((Text:string | false) => {
         Response.edit((Text as string) || "Rate Limit 3/3@60s")
+    }).catch((err) => {
+        console.log(err)
+        Response.edit("Failed...")
     })
 })
 

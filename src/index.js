@@ -61,7 +61,7 @@ function MakeRequest(Text) {
         return new Promise((res) => {
             const ID = RateLimit.HasOpenSlot();
             if (!ID) {
-                return;
+                res(false);
             }
             AI.createChatCompletion({
                 model: "gpt-3.5-turbo",
@@ -77,7 +77,7 @@ function MakeRequest(Text) {
             })
                 .catch((err) => {
                 console.log(err);
-                res(false);
+                res("Failed to make request");
             });
         });
     });
@@ -91,8 +91,10 @@ Client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, functi
         return;
     // Remove tag
     var RawText = message.content;
-    var FilteredText = RawText.replace(`<@${Client.user.id}>`, "");
-    var Response = yield MakeRequest(FilteredText);
-    message.reply(Response || "Failed to make request");
+    var FilteredText = RawText.replace(`<@${Client.user.id}>`, "") + " in english";
+    var Response = yield message.reply("Thinking...");
+    MakeRequest(FilteredText).then((Text) => {
+        Response.edit(Text || "Rate Limit 3/3@60s");
+    });
 }));
 Client.login(Settings_1.default.DiscordKey);

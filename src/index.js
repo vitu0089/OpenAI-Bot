@@ -59,8 +59,8 @@ const RateLimit = new RateLimit_1.default(Settings_1.default.RateLimit, Settings
 function MakeRequest(Text) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((res) => {
-            const ID = RateLimit.HasOpenSlot();
-            if (!ID) {
+            const HasSlot = RateLimit.HasOpenSlot();
+            if (!HasSlot) {
                 res(`Rate Limit ${Settings_1.default.RateLimit}/${Settings_1.default.RateLimit}@60s`);
             }
             AI.createChatCompletion({

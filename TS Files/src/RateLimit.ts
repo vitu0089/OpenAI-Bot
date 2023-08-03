@@ -1,39 +1,24 @@
 export default class RateLimit {
     private Limit:number
     private Timespan:number
-    private Queue:string[] = []
+    private RunningInstances = 0
 
     constructor(RateLimit:number,Timespan:number) {
         this.Limit = RateLimit
         this.Timespan = Timespan
     }
 
-    private GenerateID():string {
-        var ID = ""
-
-        for (var i=1; i < 4; i++) {
-            ID += Math.floor(Math.random() * 9).toString()
-        }
-
-        if (this.Queue.find(v => v == ID)) {
-            return this.GenerateID()
-        }
-
-        return ID
-    }
-
     HasOpenSlot():string | undefined {
-        if (this.Queue.length >= this.Limit) {
+        if (this.RunningInstances >= this.Limit) {
             return
         }
-        
-        const ID = this.GenerateID()
-        const Index = this.Queue.push(ID)
+
+        this.RunningInstances++
 
         setTimeout(() => {
-            this.Queue.slice(Index,Index + 1)
+            this.RunningInstances--
         },this.Timespan * 1000)
 
-        return ID
+        return "Thinking..."
     }
 }

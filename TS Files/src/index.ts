@@ -23,9 +23,9 @@ const RateLimit = new RLModule(Settings.RateLimit,Settings.RateLimitPeriod)
 
 async function MakeRequest(Text:string):Promise<string> {
     return new Promise((res) => {
-        const ID = RateLimit.HasOpenSlot()
+        const HasSlot = RateLimit.HasOpenSlot()
         
-        if (!ID) {
+        if (!HasSlot) {
             res(`Rate Limit ${Settings.RateLimit}/${Settings.RateLimit}@60s`)
         }
 

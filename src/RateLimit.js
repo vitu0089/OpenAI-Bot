@@ -9,7 +9,7 @@ class RateLimit {
     GenerateID() {
         var ID = "";
         for (var i = 1; i < 4; i++) {
-            ID += Math.min(Math.random() * 9).toString();
+            ID += Math.floor(Math.random() * 9).toString();
         }
         if (this.Queue.find(v => v == ID)) {
             return this.GenerateID();
@@ -17,7 +17,7 @@ class RateLimit {
         return ID;
     }
     HasOpenSlot() {
-        if (this.Queue.length > this.Limit) {
+        if (this.Queue.length >= this.Limit) {
             return;
         }
         const ID = this.GenerateID();

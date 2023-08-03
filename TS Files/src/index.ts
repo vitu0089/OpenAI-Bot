@@ -21,11 +21,12 @@ const Client = new Discord.Client({
 const AI = new OpenAIApi(AIConfig)
 const RateLimit = new RLModule(Settings.RateLimit,Settings.RateLimitPeriod)
 
-async function MakeRequest(Text:string):Promise<any> {
+async function MakeRequest(Text:string):Promise<string> {
     return new Promise((res) => {
         const ID = RateLimit.HasOpenSlot()
+        
         if (!ID) {
-            res(false)
+            res("Rate Limit 3/3@60s")
         }
 
         AI.createChatCompletion({
@@ -36,7 +37,7 @@ async function MakeRequest(Text:string):Promise<any> {
             }]
         })
         .then((Res) => {
-            res(Res.status != 429 && Res.data.choices[0].message?.content || false)
+            res(Res.data.choices[0].message?.content || "No content found")
         })
         .catch((err) => {
             console.log(err)
@@ -59,8 +60,8 @@ Client.on("messageCreate",async (message) => {
     var FilteredText = RawText.replace(`<@${Client.user.id}>`,"")
 
     var Response = await message.reply("Thinking...") 
-    MakeRequest(FilteredText).then((Text:string | false) => {
-        Response.edit((Text as string) || "Rate Limit 3/3@60s")
+    MakeRequest(FilteredText).then((Text:string) => {
+        Response.edit(Text)
     }).catch((err) => {
         console.log(err)
         Response.edit("Failed...")

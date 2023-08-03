@@ -12,7 +12,7 @@ export default class RateLimit {
         var ID = ""
 
         for (var i=1; i < 4; i++) {
-            ID += Math.min(Math.random() * 9).toString()
+            ID += Math.floor(Math.random() * 9).toString()
         }
 
         if (this.Queue.find(v => v == ID)) {
@@ -23,10 +23,10 @@ export default class RateLimit {
     }
 
     HasOpenSlot():string | undefined {
-        if (this.Queue.length > this.Limit) {
+        if (this.Queue.length >= this.Limit) {
             return
         }
-
+        
         const ID = this.GenerateID()
         const Index = this.Queue.push(ID)
 

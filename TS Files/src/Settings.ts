@@ -1,7 +1,7 @@
-import { APIKey, DiscordKey } from "./Keys"
+import { APIKey, DiscordKey, APIOrganization} from "./Keys"
 export default {
 
-    OrganizationID              :   "org-e9RGUDRx17jgqbsNnBHh4Du0",
+    OrganizationID              :   APIOrganization,
     APIKey                      :   APIKey,
     DiscordKey                  :   DiscordKey,
 

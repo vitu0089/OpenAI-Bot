@@ -61,7 +61,7 @@ function MakeRequest(Text) {
         return new Promise((res) => {
             const ID = RateLimit.HasOpenSlot();
             if (!ID) {
-                res("Rate Limit 3/3@60s");
+                res(`Rate Limit ${Settings_1.default.RateLimit}/${Settings_1.default.RateLimit}@60s`);
             }
             AI.createChatCompletion({
                 model: "gpt-3.5-turbo",

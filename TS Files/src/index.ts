@@ -26,7 +26,7 @@ async function MakeRequest(Text:string):Promise<string> {
         const ID = RateLimit.HasOpenSlot()
         
         if (!ID) {
-            res("Rate Limit 3/3@60s")
+            res(`Rate Limit ${Settings.RateLimit}/${Settings.RateLimit}@60s`)
         }
 
         AI.createChatCompletion({

@@ -31,7 +31,7 @@ export default class RateLimit {
         const Index = this.Queue.push(ID)
 
         setTimeout(() => {
-            delete this.Queue[Index]
+            this.Queue.slice(Index,Index + 1)
         },this.Timespan * 1000)
 
         return ID
